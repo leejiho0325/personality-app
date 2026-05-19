@@ -228,6 +228,8 @@ export default function PersonalityApp() {
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const d = await res.json();
+    if (d.error) throw new Error(d.error.message || "API 오류");
+    if (!d.content || !Array.isArray(d.content)) throw new Error("응답 오류: " + JSON.stringify(d).slice(0, 200));
     return d.content.map(b => b.text || "").join("").replace(/```json|```/g, "").trim();
   };
 
