@@ -128,6 +128,54 @@ function Card({ label, color, children }) {
 }
 
 function Result({ data, onRetry }) {
+  const [copied, setCopied] = useState(false);
+
+  const copyResult = () => {
+    const strengths = data.strengths?.map(s => `  ◆ ${s}`).join("\n") || "";
+    const shadows = data.shadows?.map(s => `  ◇ ${s}`).join("\n") || "";
+    const growth = data.growth?.map(g => `  → ${g}`).join("\n") || "";
+
+    const text = `✦ ${data.title}
+${data.subtitle || ""}
+
+[ 당신이라는 사람 ]
+${data.portrait}
+
+[ 내면의 패턴 ]
+${data.inner_pattern}
+핵심 두려움: ${data.core_fear || ""}
+
+[ 관계 방식 ]
+${data.relationship}
+${data.attachment_note || ""}
+
+[ 자아상과 자존감 ]
+${data.self_image}
+
+[ 연애 방식 ]
+${data.love_style || ""}
+${data.love_pattern || ""}
+
+[ 강점 ]
+${strengths}
+
+[ 그림자 ]
+${shadows}
+
+[ 당신에게 ]
+"${data.message}"
+
+[ 성장 방향 ]
+${growth}
+
+━━━━━━━━━━━━━━━━━━
+personality-app-nu.vercel.app`;
+
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  };
   return (
     <div style={{ padding:"1.6rem 1.4rem 3rem" }}>
       <div style={{ textAlign:"center", marginBottom:"1.8rem", paddingTop:"0.4rem" }}>
@@ -208,7 +256,10 @@ function Result({ data, onRetry }) {
         )}
       </Card>
 
-      <button onClick={onRetry} style={{ width:"100%", padding:"1rem", background:"transparent", border:`1px solid ${C.border}`, color:C.muted, fontFamily:"Georgia,serif", fontSize:"0.88rem", cursor:"pointer", marginTop:"0.4rem", borderRadius:0 }}>
+      <button onClick={copyResult} style={{ width:"100%", padding:"1rem", background:copied?"#2a2a2a":"transparent", border:`1px solid ${copied?C.accent:C.border}`, color:copied?C.accent:C.soft, fontFamily:"Georgia,serif", fontSize:"0.88rem", cursor:"pointer", marginTop:"0.75rem", borderRadius:0, transition:"all 0.2s" }}>
+        {copied ? "✓ 복사됐어요!" : "결과 복사하기"}
+      </button>
+      <button onClick={onRetry} style={{ width:"100%", padding:"1rem", background:"transparent", border:`1px solid ${C.border}`, color:C.muted, fontFamily:"Georgia,serif", fontSize:"0.88rem", cursor:"pointer", marginTop:"0.5rem", borderRadius:0 }}>
         다시 시작하기
       </button>
     </div>
