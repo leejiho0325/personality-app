@@ -423,12 +423,15 @@ export default function PersonalityApp() {
       return `[${q.category}] ${q.text} → "${q.choices[a.c]}"`;
     }).join("\n");
 
-    const base = `심리 분석가. MBTI 라벨 금지. 이해하는 시선으로. 이 사람의 이름은 ${userName}. 결과에서 "당신" 대신 "${userName}님"으로 표현할 것. 선택 결과:\n\n${summary}\n\n순수 JSON만 출력. 마크다운 없이. 각 값 1-2문장:\n`;
+    // 주관식만 따로 추출해서 요약
+    const subjectiveAnswers = answers.filter(a => questions[a.q].type === "text").map(a => `Q: ${questions[a.q].text}\nA: ${a.text}`).join("\n");
+    const choiceAnswers = answers.filter(a => questions[a.q].type === "choice").map(a => `[${questions[a.q].category}] ${questions[a.q].text} → ${questions[a.q].choices[a.c]}`).join("\n");
+    const base = `심리 분석가. MBTI 금지. 이름: ${userName}님. "당신" 대신 "${userName}님" 사용.\n선택:\n${choiceAnswers}\n주관식:\n${subjectiveAnswers}\nJSON만 출력. 각 값 1문장:\n`;
     try {
-      const t1 = await callAPI(base + `{"title":"시적인 제목","subtitle":"한 줄 설명","portrait":"핵심 성격 2문장","inner_pattern":"내면 패턴 2문장","core_fear":"핵심 두려움 1문장","relationship":"관계 패턴 2문장","attachment_note":"관계 주의점 1문장","self_image":"자아상 2문장"}`);
+      const t1 = await callAPI(base + `{"title":"시적 제목","subtitle":"부제","portrait":"성격 2문장","inner_pattern":"내면 패턴 2문장","core_fear":"핵심 두려움","relationship":"관계 패턴 2문장","attachment_note":"관계 주의점","self_image":"자아상 2문장"}`);
       const t2 = await callAPI(base + `{"strengths":["강점1","강점2","강점3"],"shadows":["그림자1","그림자2"],"love_style":"연애 방식 2문장","love_pattern":"연애 반복 패턴 1문장","bad_habits":"나쁜 습관과 방어기제 2문장","stress_pattern":"스트레스 패턴 1문장"}`);
       const t3 = await callAPI(base + `{"relationship_type":"나에게 맞는 관계 유형 2문장","relationship_advice":"관계 주의점 1문장","travel_style":"이 사람에게 맞는 여행 스타일 2문장","travel_destinations":["구체적인 추천 여행지1 - 이유","추천 여행지2 - 이유","추천 여행지3 - 이유"],"message":"따뜻한 말 2문장","growth":["성장 제안1","제안2","제안3"]}`);
-      const t4 = await callAPI(base + `{"season":"이 사람을 계절과 시간대로 표현 (예: 늦가을 오후 같은 사람) 1문장","season_reason":"그 이유 1문장","unknown_self":"스스로 몰랐던 자신의 모습 2문장","need_now":"지금 이 시기의 당신에게 필요한 것 2문장","letter":"이 사람에게 쓰는 따뜻한 편지. 당신은... 으로 시작. 3-4문장. 분석 말고 진심으로."}`);
+      const t4 = await callAPI(base + `{"season":"계절 표현 1문장","season_reason":"이유 1문장","unknown_self":"몰랐던 자신 2문장","need_now":"지금 필요한 것 2문장","letter":"${userName}님께 쓰는 편지 3문장"}`);
       const finalResult = { ...JSON.parse(t1), ...JSON.parse(t2), ...JSON.parse(t3), ...JSON.parse(t4) };
       setResult(finalResult);
       setPhase("result");
