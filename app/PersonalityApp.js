@@ -39,6 +39,13 @@ const letters = ["A", "B", "C", "D"];
 const C = { bg: "#090909", card: "#141414", border: "#252525", accent: "#b8976a", accent2: "#6a8ab8", love: "#c46a8a", text: "#ddd8d0", muted: "#666260", highlight: "#ede8e0", soft: "#a09c98" };
 
 function Intro({ onStart }) {
+  const [name, setName] = useState("");
+
+  const handleStart = () => {
+    if (name.trim().length === 0) return;
+    onStart(name.trim());
+  };
+
   return (
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:"100vh", padding:"2rem 1.4rem", textAlign:"center" }}>
       <p style={{ fontFamily:"monospace", fontSize:"0.6rem", letterSpacing:"0.35em", color:C.accent, marginBottom:"1.8rem" }}>DEEP · SELF · PORTRAIT</p>
@@ -52,10 +59,20 @@ function Intro({ onStart }) {
         어떻게 사랑하고, 어떻게 자신을 바라보는지.<br />
         <span style={{ color:C.soft }}>내면의 패턴</span>으로 읽습니다.
       </p>
-      <p style={{ fontFamily:"monospace", fontSize:"0.58rem", color:C.muted, letterSpacing:"0.1em", margin:"1.6rem 0 2rem" }}>
+      <p style={{ fontFamily:"monospace", fontSize:"0.58rem", color:C.muted, letterSpacing:"0.1em", margin:"1.6rem 0 1.5rem" }}>
         29개 질문 · 솔직할수록 정확합니다
       </p>
-      <button onClick={onStart} style={{ width:"100%", maxWidth:300, padding:"1rem", background:"transparent", border:`1px solid ${C.accent}`, color:C.accent, fontFamily:"Georgia,serif", fontSize:"1rem", cursor:"pointer" }}>
+      <input
+        type="text"
+        value={name}
+        onChange={e => setName(e.target.value)}
+        onKeyDown={e => e.key === "Enter" && handleStart()}
+        placeholder="이름을 입력해주세요"
+        style={{ width:"100%", maxWidth:300, padding:"0.9rem 1rem", background:"transparent", border:`1px solid ${C.border}`, color:C.text, fontFamily:"Georgia,serif", fontSize:"0.95rem", marginBottom:"0.8rem", outline:"none", textAlign:"center", borderRadius:0 }}
+        onFocus={e => e.target.style.borderColor = C.accent}
+        onBlur={e => e.target.style.borderColor = C.border}
+      />
+      <button onClick={handleStart} disabled={name.trim().length === 0} style={{ width:"100%", maxWidth:300, padding:"1rem", background:name.trim().length>0?C.accent:"transparent", border:`1px solid ${name.trim().length>0?C.accent:C.border}`, color:name.trim().length>0?C.bg:C.border, fontFamily:"Georgia,serif", fontSize:"1rem", cursor:name.trim().length>0?"pointer":"not-allowed", transition:"all 0.2s" }}>
         시작하기
       </button>
       <p style={{ fontFamily:"Georgia,serif", fontSize:"0.82rem", color:C.accent, margin:"1.5rem 0 0", lineHeight:1.7 }}>
@@ -166,7 +183,7 @@ function Card({ label, color, children }) {
   );
 }
 
-function Result({ data, onRetry }) {
+function Result({ data, onRetry, userName }) {
   const [copied, setCopied] = useState(false);
 
   const copyResult = () => {
@@ -231,6 +248,7 @@ personality-app-nu.vercel.app`;
     <div style={{ padding:"1.6rem 1.4rem 3rem" }}>
       <div style={{ textAlign:"center", marginBottom:"1.8rem", paddingTop:"0.4rem" }}>
         <p style={{ fontFamily:"monospace", fontSize:"0.57rem", letterSpacing:"0.28em", color:C.accent, marginBottom:"0.75rem" }}>// YOUR INNER PORTRAIT</p>
+        <p style={{ fontFamily:"monospace", fontSize:"0.6rem", color:C.muted, letterSpacing:"0.1em", marginBottom:"0.4rem" }}>{userName}님의 내면 초상화</p>
         <h2 style={{ fontFamily:"Georgia,serif", fontSize:"1.6rem", fontWeight:300, color:C.highlight, lineHeight:1.3 }}>{data.title}</h2>
         {data.subtitle && <p style={{ color:C.muted, fontSize:"0.8rem", marginTop:"0.5rem", fontStyle:"italic" }}>{data.subtitle}</p>}
       </div>
@@ -382,6 +400,7 @@ export default function PersonalityApp() {
   const [phase, setPhase] = useState("intro");
   const [result, setResult] = useState(null);
   const [errMsg, setErrMsg] = useState("");
+  const [userName, setUserName] = useState("");
 
   const callAPI = async (prompt) => {
     const res = await fetch("/api/analyze", {
@@ -410,8 +429,22 @@ export default function PersonalityApp() {
       const t2 = await callAPI(base + `{"strengths":["강점1","강점2","강점3"],"shadows":["그림자1","그림자2"],"love_style":"연애 방식 2문장","love_pattern":"연애 반복 패턴 1문장","bad_habits":"나쁜 습관과 방어기제 2문장","stress_pattern":"스트레스 패턴 1문장"}`);
       const t3 = await callAPI(base + `{"relationship_type":"나에게 맞는 관계 유형 2문장","relationship_advice":"관계 주의점 1문장","travel_style":"이 사람에게 맞는 여행 스타일 2문장","travel_destinations":["구체적인 추천 여행지1 - 이유","추천 여행지2 - 이유","추천 여행지3 - 이유"],"message":"따뜻한 말 2문장","growth":["성장 제안1","제안2","제안3"]}`);
       const t4 = await callAPI(base + `{"season":"이 사람을 계절과 시간대로 표현 (예: 늦가을 오후 같은 사람) 1문장","season_reason":"그 이유 1문장","unknown_self":"스스로 몰랐던 자신의 모습 2문장","need_now":"지금 이 시기의 당신에게 필요한 것 2문장","letter":"이 사람에게 쓰는 따뜻한 편지. 당신은... 으로 시작. 3-4문장. 분석 말고 진심으로."}`);
-      setResult({ ...JSON.parse(t1), ...JSON.parse(t2), ...JSON.parse(t3), ...JSON.parse(t4) });
+      const finalResult = { ...JSON.parse(t1), ...JSON.parse(t2), ...JSON.parse(t3), ...JSON.parse(t4) };
+      setResult(finalResult);
       setPhase("result");
+      // Supabase 저장
+      try {
+        await fetch("/api/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: userName,
+            title: finalResult.title,
+            portrait: finalResult.portrait,
+            result_data: finalResult,
+          }),
+        });
+      } catch(e) { console.log("저장 실패:", e); }
     } catch (e) {
       setErrMsg(e.message || "알 수 없는 오류");
       setPhase("error");
@@ -420,10 +453,10 @@ export default function PersonalityApp() {
 
   return (
     <div style={{ maxWidth:480, margin:"0 auto", minHeight:"100vh", background:C.bg, color:C.text, fontFamily:"Georgia,serif" }}>
-      {phase === "intro" && <Intro onStart={() => setPhase("quiz")} />}
-      {phase === "quiz" && <Quiz onFinish={handleFinish} />}
+      {phase === "intro" && <Intro onStart={(name) => { setUserName(name); setPhase("quiz"); }} />}
+      {phase === "quiz" && <Quiz onFinish={handleFinish} userName={userName} />}
       {phase === "loading" && <Loading />}
-      {phase === "result" && result && <Result data={result} onRetry={() => { setResult(null); setPhase("intro"); }} />}
+      {phase === "result" && result && <Result data={result} userName={userName} onRetry={() => { setResult(null); setPhase("intro"); }} />}
       {phase === "error" && (
         <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:"100vh", padding:"2rem 1.4rem", textAlign:"center" }}>
           <p style={{ color:"#b86a6a", marginBottom:"1rem", fontSize:"0.95rem" }}>분석 중 오류가 발생했습니다</p>
