@@ -1,26 +1,32 @@
 "use client";
 import { useState, useEffect } from "react";
 
+// type: "choice" = 객관식, "text" = 주관식
 const questions = [
-  { category: "내면 심리", text: "당신이 가장 숨기고 싶은 것은?", context: "아무도 모른다고 가정했을 때, 당신 안에 있는 것.", choices: ["내가 생각만큼 괜찮은 사람이 아닐 수도 있다는 두려움", "진심으로 원하는 게 뭔지 사실 잘 모른다는 것", "누군가를 깊이 필요로 하면서도 드러내지 못한다는 것", "지금 이 삶이 내가 진짜 원하던 삶이 아닐 수 있다는 감각"] },
-  { category: "내면 심리", text: "타인에게 어떤 사람으로 기억되고 싶나요?", context: "사회적으로 올바른 답 말고, 진짜로 원하는 것.", choices: ["존경받는 사람. 능력 있고 흔들리지 않는.", "따뜻한 사람. 곁에 있으면 편안해지는.", "자유로운 사람. 자기 방식대로 사는.", "의미 있는 사람. 무언가를 남긴."] },
-  { category: "내면 심리", text: "스스로를 가장 자책할 때는?", context: "잘못이 아니어도 자책하게 되는 패턴.", choices: ["누군가에게 실망을 줬거나 기대에 못 미쳤을 때", "감정적으로 반응해서 내가 원하는 모습이 아니었을 때", "해야 할 일을 미루거나 흐지부지 넘긴 것 같을 때", "타인의 감정보다 내 것을 먼저 챙겼다는 느낌이 들 때"] },
-  { category: "관계와 애착", text: "가까운 사람이 갑자기 연락을 끊었습니다.", context: "며칠째 답장이 없고, 이유도 모르는 상황.", choices: ["내가 뭔가 잘못한 건지 자꾸 되짚어본다", "연락해서 무슨 일인지 직접 물어본다", "상대방 사정이 있겠지 생각하고 기다린다", "서운하지만 먼저 다가가지 않기로 한다"] },
-  { category: "관계와 애착", text: "누군가와 함께 있을 때 외로움을 느끼는 순간은?", context: "혼자 있을 때가 아닌, 함께 있을 때.", choices: ["내 진짜 감정을 말했는데 상대가 이해 못 한다고 느낄 때", "상대는 편해 보이는데 나만 애쓰고 있다는 느낌이 들 때", "깊은 대화 없이 표면적인 말만 오갈 때", "내가 어떤 역할을 해야 하는지만 신경 쓰일 때"] },
-  { category: "관계와 애착", text: "누군가를 아낄 때 가장 먼저 하는 행동은?", context: "의식하지 않아도 자연스럽게 나오는 것.", choices: ["그 사람에게 필요한 게 뭔지 파악하고 도우려 한다", "함께 있는 시간을 자꾸 만들려 한다", "솔직한 말을 해주려 한다. 듣기 불편해도.", "그 사람이 잘 되도록 뒤에서 응원한다"] },
-  { category: "자아상", text: "스스로에 대해 가장 확신하지 못하는 것은?", context: "성취나 능력이 아닌, 존재 자체에 대한 이야기.", choices: ["나는 충분히 사랑받을 자격이 있는가", "나는 타인에게 진짜로 중요한 존재인가", "나는 나 자신을 제대로 알고 있는가", "나는 지금 올바른 방향으로 살고 있는가"] },
-  { category: "자아상", text: "누군가 진심으로 칭찬했을 때 내면의 첫 반응은?", context: "외부에 드러내는 반응이 아닌, 내면에서 먼저 일어나는 것.", choices: ["기쁘지만 '다 알지는 못해서'라는 생각이 든다", "진심으로 기쁘게 받아들인다", "뭔가 돌려줘야 할 것 같은 느낌이 든다", "칭찬의 진의를 먼저 파악하려 한다"] },
-  { category: "삶의 태도", text: "삶이 뜻대로 안 될 때, 이유를 어디서 찾나요?", context: "의식적이든 무의식적이든, 먼저 향하는 곳.", choices: ["나 자신에게서. 내가 뭘 놓쳤는지 돌아본다", "상황이나 환경에서. 조건이 달랐다면 달랐을 것", "타이밍에서. 때가 아니었다", "이유보다 다음을 먼저 생각한다"] },
-  { category: "삶의 태도", text: "'잘 살고 있다'는 감각은 언제 오나요?", context: "남들 기준이 아닌, 스스로 느끼는 기준.", choices: ["무언가를 해냈거나 성장했다는 느낌이 들 때", "소중한 사람들과 깊이 연결되어 있다는 느낌이 들 때", "내 방식대로 하루를 보냈다는 느낌이 들 때", "지금 이 순간이 충분하다는 느낌이 들 때"] },
-  { category: "연애", text: "연애에서 가장 힘든 순간은?", context: "상대 잘못이 아닌, 나로 인해 생기는 어려움.", choices: ["내 감정을 있는 그대로 표현하는 것", "상대가 나를 진짜로 좋아하는지 확신 못 하는 것", "가까워질수록 오히려 불안해지는 것", "너무 많이 맞춰주다 지치는 것"] },
-  { category: "연애", text: "연인과 크게 다퉜을 때 첫 반응은?", context: "감정이 격해진 직후, 가장 먼저 하고 싶은 것.", choices: ["혼자 있고 싶다. 생각을 정리할 시간이 필요하다", "바로 화해하고 싶다. 이 불편함을 빨리 끝내고 싶다", "내가 뭘 잘못했는지 계속 되짚어본다", "상대가 먼저 연락해오길 기다린다"] },
-  { category: "핵심", text: "가장 용기 내기 어려운 것은?", context: "하고 싶지만 아직 못 하고 있거나 계속 미루는 것.", choices: ["내가 원하는 것을 원한다고 말하는 것", "관계에서 진짜 감정을 드러내는 것", "지금의 삶을 바꾸는 것", "나 자신을 있는 그대로 받아들이는 것"] },
-  { category: "스트레스", text: "많이 지치거나 힘들 때 당신은 어떻게 하나요?", context: "의식적으로 선택하는 게 아닌, 자동으로 하게 되는 것.", choices: ["혼자만의 시간을 갖는다. 조용히 충전이 필요하다", "누군가와 대화하거나 만나서 풀린다", "뭔가에 몰두한다. 운동, 게임, 유튜브 등", "그냥 버티다 보면 지나간다"] },
-  { category: "스트레스", text: "극도로 스트레스받을 때 나오는 나쁜 습관은?", context: "알면서도 하게 되는 것.", choices: ["폭식하거나 아예 못 먹는다", "모든 걸 미루고 누워만 있는다", "필요 이상으로 남 눈치를 보거나 예민해진다", "혼자 삭이다가 갑자기 폭발한다"] },
-  { category: "여행", text: "여행을 간다면 어떤 스타일인가요?", context: "진짜 선호하는 방식.", choices: ["빼곡한 계획을 세우고 그대로 움직인다", "큰 틀만 잡고 즉흥적으로 움직인다", "아무 계획 없이 그냥 떠난다", "혼자보다 누군가와 함께 가는 게 중요하다"] },
+  { category: "내면 심리", type:"choice", text: "당신이 가장 숨기고 싶은 것은?", context: "아무도 모른다고 가정했을 때, 당신 안에 있는 것.", choices: ["내가 생각만큼 괜찮은 사람이 아닐 수도 있다는 두려움", "진심으로 원하는 게 뭔지 사실 잘 모른다는 것", "누군가를 깊이 필요로 하면서도 드러내지 못한다는 것", "지금 이 삶이 내가 진짜 원하던 삶이 아닐 수 있다는 감각"] },
+  { category: "내면 심리", type:"choice", text: "타인에게 어떤 사람으로 기억되고 싶나요?", context: "사회적으로 올바른 답 말고, 진짜로 원하는 것.", choices: ["존경받는 사람. 능력 있고 흔들리지 않는.", "따뜻한 사람. 곁에 있으면 편안해지는.", "자유로운 사람. 자기 방식대로 사는.", "의미 있는 사람. 무언가를 남긴."] },
+  { category: "내면 심리", type:"choice", text: "스스로를 가장 자책할 때는?", context: "잘못이 아니어도 자책하게 되는 패턴.", choices: ["누군가에게 실망을 줬거나 기대에 못 미쳤을 때", "감정적으로 반응해서 내가 원하는 모습이 아니었을 때", "해야 할 일을 미루거나 흐지부지 넘긴 것 같을 때", "타인의 감정보다 내 것을 먼저 챙겼다는 느낌이 들 때"] },
+  { category: "내면 심리", type:"choice", text: "당신이 가장 질투를 느끼는 순간은?", context: "불편해도 솔직하게.", choices: ["자유롭고 거침없이 사는 사람을 볼 때", "내가 원하는 걸 이미 가진 사람을 볼 때", "깊이 사랑받고 인정받는 사람을 볼 때", "자기 자신을 잘 아는 사람을 볼 때"] },
+  { category: "내면 심리", type:"choice", text: "당신은 행복한 척을 얼마나 자주 하나요?", context: "솔직하게.", choices: ["거의 안 한다. 감정을 있는 그대로 드러내는 편", "가끔. 상황에 따라 감추기도 한다", "자주. 힘들어도 괜찮은 척할 때가 많다", "항상에 가깝다. 진짜 감정을 드러내는 게 두렵다"] },
+  { category: "관계와 애착", type:"choice", text: "가까운 사람이 갑자기 연락을 끊었습니다.", context: "며칠째 답장이 없고, 이유도 모르는 상황.", choices: ["내가 뭔가 잘못한 건지 자꾸 되짚어본다", "연락해서 무슨 일인지 직접 물어본다", "상대방 사정이 있겠지 생각하고 기다린다", "서운하지만 먼저 다가가지 않기로 한다"] },
+  { category: "관계와 애착", type:"choice", text: "누군가와 함께 있을 때 외로움을 느끼는 순간은?", context: "혼자 있을 때가 아닌, 함께 있을 때.", choices: ["내 진짜 감정을 말했는데 상대가 이해 못 한다고 느낄 때", "상대는 편해 보이는데 나만 애쓰고 있다는 느낌이 들 때", "깊은 대화 없이 표면적인 말만 오갈 때", "내가 어떤 역할을 해야 하는지만 신경 쓰일 때"] },
+  { category: "관계와 애착", type:"choice", text: "당신이 절대 용서하기 어려운 것은?", context: "가장 깊이 상처받는 지점.", choices: ["배신. 믿었던 사람이 등을 돌리는 것", "무시. 내 존재가 중요하지 않다는 느낌", "거짓말. 진실을 숨기거나 속이는 것", "방치. 힘들 때 곁에 없는 것"] },
+  { category: "자아상", type:"choice", text: "스스로에 대해 가장 확신하지 못하는 것은?", context: "성취나 능력이 아닌, 존재 자체에 대한 이야기.", choices: ["나는 충분히 사랑받을 자격이 있는가", "나는 타인에게 진짜로 중요한 존재인가", "나는 나 자신을 제대로 알고 있는가", "나는 지금 올바른 방향으로 살고 있는가"] },
+  { category: "자아상", type:"choice", text: "누군가 진심으로 칭찬했을 때 내면의 첫 반응은?", context: "외부에 드러내는 반응이 아닌, 내면에서 먼저 일어나는 것.", choices: ["기쁘지만 '다 알지는 못해서'라는 생각이 든다", "진심으로 기쁘게 받아들인다", "뭔가 돌려줘야 할 것 같은 느낌이 든다", "칭찬의 진의를 먼저 파악하려 한다"] },
+  { category: "삶의 태도", type:"choice", text: "삶이 뜻대로 안 될 때, 이유를 어디서 찾나요?", context: "의식적이든 무의식적이든, 먼저 향하는 곳.", choices: ["나 자신에게서. 내가 뭘 놓쳤는지 돌아본다", "상황이나 환경에서. 조건이 달랐다면 달랐을 것", "타이밍에서. 때가 아니었다", "이유보다 다음을 먼저 생각한다"] },
+  { category: "삶의 태도", type:"choice", text: "'잘 살고 있다'는 감각은 언제 오나요?", context: "남들 기준이 아닌, 스스로 느끼는 기준.", choices: ["무언가를 해냈거나 성장했다는 느낌이 들 때", "소중한 사람들과 깊이 연결되어 있다는 느낌이 들 때", "내 방식대로 하루를 보냈다는 느낌이 들 때", "지금 이 순간이 충분하다는 느낌이 들 때"] },
+  { category: "연애", type:"choice", text: "연애에서 가장 힘든 순간은?", context: "상대 잘못이 아닌, 나로 인해 생기는 어려움.", choices: ["내 감정을 있는 그대로 표현하는 것", "상대가 나를 진짜로 좋아하는지 확신 못 하는 것", "가까워질수록 오히려 불안해지는 것", "너무 많이 맞춰주다 지치는 것"] },
+  { category: "연애", type:"choice", text: "연인과 크게 다퉜을 때 첫 반응은?", context: "감정이 격해진 직후, 가장 먼저 하고 싶은 것.", choices: ["혼자 있고 싶다. 생각을 정리할 시간이 필요하다", "바로 화해하고 싶다. 이 불편함을 빨리 끝내고 싶다", "내가 뭘 잘못했는지 계속 되짚어본다", "상대가 먼저 연락해오길 기다린다"] },
+  { category: "핵심", type:"choice", text: "가장 용기 내기 어려운 것은?", context: "하고 싶지만 아직 못 하고 있거나 계속 미루는 것.", choices: ["내가 원하는 것을 원한다고 말하는 것", "관계에서 진짜 감정을 드러내는 것", "지금의 삶을 바꾸는 것", "나 자신을 있는 그대로 받아들이는 것"] },
+  { category: "스트레스", type:"choice", text: "많이 지치거나 힘들 때 당신은 어떻게 하나요?", context: "자동으로 하게 되는 것.", choices: ["혼자만의 시간을 갖는다. 조용히 충전이 필요하다", "누군가와 대화하거나 만나서 풀린다", "뭔가에 몰두한다. 운동, 게임, 유튜브 등", "그냥 버티다 보면 지나간다"] },
+  { category: "스트레스", type:"choice", text: "극도로 스트레스받을 때 나오는 나쁜 습관은?", context: "알면서도 하게 되는 것.", choices: ["폭식하거나 아예 못 먹는다", "모든 걸 미루고 누워만 있는다", "필요 이상으로 남 눈치를 보거나 예민해진다", "혼자 삭이다가 갑자기 폭발한다"] },
+  { category: "여행", type:"choice", text: "여행을 간다면 어떤 스타일인가요?", context: "진짜 선호하는 방식.", choices: ["빼곡한 계획을 세우고 그대로 움직인다", "큰 틀만 잡고 즉흥적으로 움직인다", "아무 계획 없이 그냥 떠난다", "혼자보다 누군가와 함께 가는 게 중요하다"] },
+  { category: "여행", type:"choice", text: "여행에서 가장 기억에 남는 순간은?", context: "여행의 어떤 부분이 당신을 채우나요?", choices: ["낯선 골목을 혼자 걷다가 발견한 작은 것들", "현지 음식과 문화에 완전히 녹아드는 순간", "동행과 함께 웃고 떠들었던 순간들", "일상과 완전히 단절된 고요함과 자유"] },
+  { category: "주관식", type:"text", text: "지금 가장 해결 안 된 감정이 있다면?", context: "없어도 괜찮아요. 있다면 솔직하게 써주세요.", placeholder: "어떤 감정이든 자유롭게..." },
+  { category: "주관식", type:"text", text: "당신이 진짜 원하는 삶은 어떤 모습인가요?", context: "현실 가능 여부는 상관없이, 진짜로 원하는 것.", placeholder: "자유롭게 써주세요..." },
 ];
 
-const catColor = { "내면 심리": "#b8976a", "관계와 애착": "#6a8ab8", "자아상": "#8a6ab8", "삶의 태도": "#6ab88a", "연애": "#c46a8a", "핵심": "#c0bdb8", "스트레스": "#b86a6a", "여행": "#6ab8a8" };
+const catColor = { "내면 심리": "#b8976a", "관계와 애착": "#6a8ab8", "자아상": "#8a6ab8", "삶의 태도": "#6ab88a", "연애": "#c46a8a", "핵심": "#c0bdb8", "스트레스": "#b86a6a", "여행": "#6ab8a8", "주관식": "#a08ab8" };
 const letters = ["A", "B", "C", "D"];
 const C = { bg: "#090909", card: "#141414", border: "#252525", accent: "#b8976a", accent2: "#6a8ab8", love: "#c46a8a", text: "#ddd8d0", muted: "#666260", highlight: "#ede8e0", soft: "#a09c98" };
 
@@ -39,7 +45,7 @@ function Intro({ onStart }) {
         <span style={{ color:C.soft }}>내면의 패턴</span>으로 읽습니다.
       </p>
       <p style={{ fontFamily:"monospace", fontSize:"0.58rem", color:C.muted, letterSpacing:"0.1em", margin:"1.6rem 0 2rem" }}>
-        16개 질문 · 솔직할수록 정확합니다
+        21개 질문 · 솔직할수록 정확합니다
       </p>
       <button onClick={onStart} style={{ width:"100%", maxWidth:300, padding:"1rem", background:"transparent", border:`1px solid ${C.accent}`, color:C.accent, fontFamily:"Georgia,serif", fontSize:"1rem", cursor:"pointer" }}>
         시작하기
@@ -58,16 +64,20 @@ function Quiz({ onFinish }) {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [textInput, setTextInput] = useState("");
 
   const q = questions[current];
   const color = catColor[q.category] || C.accent;
   const pct = Math.round((current / questions.length) * 100);
+  const isText = q.type === "text";
+  const canNext = isText ? textInput.trim().length > 0 : selected !== null;
 
   const next = () => {
-    if (selected === null) return;
-    const na = [...answers, { q: current, c: selected }];
+    if (!canNext) return;
+    const answer = isText ? { q: current, text: textInput.trim() } : { q: current, c: selected };
+    const na = [...answers, answer];
     if (current + 1 >= questions.length) { onFinish(na); }
-    else { setAnswers(na); setCurrent(current + 1); setSelected(null); }
+    else { setAnswers(na); setCurrent(current + 1); setSelected(null); setTextInput(""); }
   };
 
   return (
@@ -85,21 +95,33 @@ function Quiz({ onFinish }) {
       <div style={{ flex:1, padding:"1.6rem 1.4rem 1rem", overflowY:"auto" }}>
         <p style={{ fontFamily:"Georgia,serif", fontSize:"1.12rem", lineHeight:1.72, color:C.highlight, marginBottom:"0.8rem" }}>{q.text}</p>
         <p style={{ fontSize:"0.8rem", color:C.muted, lineHeight:1.65, fontStyle:"italic", borderLeft:`2px solid ${C.border}`, paddingLeft:"0.85rem", marginBottom:"1.6rem" }}>{q.context}</p>
-        <div style={{ display:"flex", flexDirection:"column", gap:"0.65rem" }}>
-          {q.choices.map((choice, i) => {
-            const sel = selected === i;
-            return (
-              <button key={i} onClick={() => setSelected(i)} style={{ background:sel?`${color}18`:"transparent", border:`1px solid ${sel?color:C.border}`, color:sel?C.highlight:C.soft, padding:"1rem 1.1rem", textAlign:"left", cursor:"pointer", fontFamily:"Georgia,serif", fontSize:"0.9rem", lineHeight:1.6, display:"flex", gap:"0.85rem", alignItems:"flex-start", transition:"all 0.15s", borderRadius:0 }}>
-                <span style={{ fontFamily:"monospace", fontSize:"0.6rem", color, flexShrink:0, marginTop:"0.22rem" }}>{letters[i]}</span>
-                <span>{choice}</span>
-              </button>
-            );
-          })}
-        </div>
+
+        {isText ? (
+          <textarea
+            value={textInput}
+            onChange={e => setTextInput(e.target.value)}
+            placeholder={q.placeholder}
+            style={{ width:"100%", minHeight:140, background:"transparent", border:`1px solid ${C.border}`, color:C.text, padding:"1rem", fontFamily:"Georgia,serif", fontSize:"0.92rem", lineHeight:1.75, resize:"vertical", outline:"none", borderRadius:0, boxSizing:"border-box" }}
+            onFocus={e => e.target.style.borderColor = color}
+            onBlur={e => e.target.style.borderColor = C.border}
+          />
+        ) : (
+          <div style={{ display:"flex", flexDirection:"column", gap:"0.65rem" }}>
+            {q.choices.map((choice, i) => {
+              const sel = selected === i;
+              return (
+                <button key={i} onClick={() => setSelected(i)} style={{ background:sel?`${color}18`:"transparent", border:`1px solid ${sel?color:C.border}`, color:sel?C.highlight:C.soft, padding:"1rem 1.1rem", textAlign:"left", cursor:"pointer", fontFamily:"Georgia,serif", fontSize:"0.9rem", lineHeight:1.6, display:"flex", gap:"0.85rem", alignItems:"flex-start", transition:"all 0.15s", borderRadius:0 }}>
+                  <span style={{ fontFamily:"monospace", fontSize:"0.6rem", color, flexShrink:0, marginTop:"0.22rem" }}>{letters[i]}</span>
+                  <span>{choice}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div style={{ padding:"1rem 1.4rem", background:C.bg, borderTop:`1px solid ${C.border}` }}>
-        <button onClick={next} disabled={selected === null} style={{ width:"100%", padding:"1rem", background:selected!==null?color:"transparent", border:`1px solid ${selected!==null?color:C.border}`, color:selected!==null?C.bg:C.border, fontFamily:"Georgia,serif", fontSize:"0.95rem", cursor:selected!==null?"pointer":"not-allowed", transition:"all 0.2s", borderRadius:0 }}>
+        <button onClick={next} disabled={!canNext} style={{ width:"100%", padding:"1rem", background:canNext?color:"transparent", border:`1px solid ${canNext?color:C.border}`, color:canNext?C.bg:C.border, fontFamily:"Georgia,serif", fontSize:"0.95rem", cursor:canNext?"pointer":"not-allowed", transition:"all 0.2s", borderRadius:0 }}>
           {current + 1 === questions.length ? "분석 시작" : "다음"}
         </button>
       </div>
@@ -108,7 +130,7 @@ function Quiz({ onFinish }) {
 }
 
 function Loading() {
-  const steps = ["두려움과 욕구의 패턴을 읽는 중…","관계 방식을 분석하는 중…","자아상의 윤곽을 그리는 중…","연애 패턴을 파악하는 중…","당신만의 초상화를 완성하는 중…"];
+  const steps = ["두려움과 욕구의 패턴을 읽는 중…","관계 방식을 분석하는 중…","자아상의 윤곽을 그리는 중…","연애 패턴을 파악하는 중…","여행지를 추천하는 중…","당신만의 초상화를 완성하는 중…"];
   const [step, setStep] = useState(0);
   useEffect(() => {
     const t = setInterval(() => setStep(s => (s + 1) % steps.length), 1800);
@@ -143,6 +165,7 @@ function Result({ data, onRetry }) {
     const strengths = data.strengths?.map(s => `  ◆ ${s}`).join("\n") || "";
     const shadows = data.shadows?.map(s => `  ◇ ${s}`).join("\n") || "";
     const growth = data.growth?.map(g => `  → ${g}`).join("\n") || "";
+    const travel = data.travel_destinations?.map(t => `  • ${t}`).join("\n") || "";
 
     const text = `✦ ${data.title}
 ${data.subtitle || ""}
@@ -165,11 +188,21 @@ ${data.self_image}
 ${data.love_style || ""}
 ${data.love_pattern || ""}
 
+[ 나쁜 습관과 방어기제 ]
+${data.bad_habits || ""}
+
+[ 나에게 맞는 관계 유형 ]
+${data.relationship_type || ""}
+
 [ 강점 ]
 ${strengths}
 
 [ 그림자 ]
 ${shadows}
+
+[ 추천 여행지 ]
+${travel}
+${data.travel_style || ""}
 
 [ 당신에게 ]
 "${data.message}"
@@ -177,7 +210,7 @@ ${shadows}
 [ 성장 방향 ]
 ${growth}
 
-━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━
 personality-app-nu.vercel.app`;
 
     navigator.clipboard.writeText(text).then(() => {
@@ -185,6 +218,7 @@ personality-app-nu.vercel.app`;
       setTimeout(() => setCopied(false), 2500);
     });
   };
+
   return (
     <div style={{ padding:"1.6rem 1.4rem 3rem" }}>
       <div style={{ textAlign:"center", marginBottom:"1.8rem", paddingTop:"0.4rem" }}>
@@ -273,6 +307,19 @@ personality-app-nu.vercel.app`;
         ))}
       </Card>
 
+      {data.travel_destinations && (
+        <Card label="추천 여행지" color={catColor["여행"]}>
+          <p style={{ fontSize:"0.9rem", lineHeight:1.9, color:C.text, marginBottom:"1rem" }}>{data.travel_style}</p>
+          <p style={{ fontFamily:"monospace", fontSize:"0.54rem", color:catColor["여행"], letterSpacing:"0.14em", marginBottom:"0.75rem" }}>DESTINATIONS</p>
+          {data.travel_destinations?.map((t, i) => (
+            <div key={i} style={{ display:"flex", gap:"0.75rem", marginBottom:"0.65rem", alignItems:"flex-start" }}>
+              <span style={{ color:catColor["여행"], flexShrink:0 }}>•</span>
+              <p style={{ fontSize:"0.9rem", color:C.text, lineHeight:1.65 }}>{t}</p>
+            </div>
+          ))}
+        </Card>
+      )}
+
       <Card label="당신에게" color={C.accent2}>
         <p style={{ fontFamily:"Georgia,serif", fontSize:"0.9rem", lineHeight:2, color:C.text, fontStyle:"italic", marginBottom:data.growth?"1.2rem":0 }}>"{data.message}"</p>
         {data.growth && (
@@ -318,12 +365,17 @@ export default function PersonalityApp() {
 
   const handleFinish = async (answers) => {
     setPhase("loading");
-    const summary = answers.map(a => `[${questions[a.q].category}] ${questions[a.q].text} → "${questions[a.q].choices[a.c]}"`).join("\n");
+    const summary = answers.map(a => {
+      const q = questions[a.q];
+      if (q.type === "text") return `[${q.category}] ${q.text} → "${a.text}"`;
+      return `[${q.category}] ${q.text} → "${q.choices[a.c]}"`;
+    }).join("\n");
+
     const base = `심리 분석가. MBTI 라벨 금지. 이해하는 시선으로. 선택 결과:\n\n${summary}\n\n순수 JSON만 출력. 마크다운 없이. 각 값 1-2문장:\n`;
     try {
       const t1 = await callAPI(base + `{"title":"시적인 제목","subtitle":"한 줄 설명","portrait":"핵심 성격 2문장","inner_pattern":"내면 패턴 2문장","core_fear":"핵심 두려움 1문장","relationship":"관계 패턴 2문장","attachment_note":"관계 주의점 1문장","self_image":"자아상 2문장"}`);
-      const t2 = await callAPI(base + `{"strengths":["강점1","강점2","강점3"],"shadows":["그림자1","그림자2"],"love_style":"연애 방식 2문장","love_pattern":"연애 반복 패턴 1문장","message":"따뜻한 말 2문장","growth":["제안1","제안2","제안3"]}`);
-      const t3 = await callAPI(base + `{"bad_habits":"나쁜 습관과 방어기제 2문장","stress_pattern":"스트레스 반응 패턴 1문장","relationship_type":"나에게 맞는 관계 유형 2문장","relationship_advice":"관계에서 주의할 점 1문장"}`);
+      const t2 = await callAPI(base + `{"strengths":["강점1","강점2","강점3"],"shadows":["그림자1","그림자2"],"love_style":"연애 방식 2문장","love_pattern":"연애 반복 패턴 1문장","bad_habits":"나쁜 습관과 방어기제 2문장","stress_pattern":"스트레스 패턴 1문장"}`);
+      const t3 = await callAPI(base + `{"relationship_type":"나에게 맞는 관계 유형 2문장","relationship_advice":"관계 주의점 1문장","travel_style":"이 사람에게 맞는 여행 스타일 2문장","travel_destinations":["구체적인 추천 여행지1 - 이유","추천 여행지2 - 이유","추천 여행지3 - 이유"],"message":"따뜻한 말 2문장","growth":["성장 제안1","제안2","제안3"]}`);
       setResult({ ...JSON.parse(t1), ...JSON.parse(t2), ...JSON.parse(t3) });
       setPhase("result");
     } catch (e) {
