@@ -328,6 +328,31 @@ personality-app-nu.vercel.app`;
         </Card>
       )}
 
+      {data.season && (
+        <Card label="당신은 어떤 계절인가요" color="#9b8ab8">
+          <p style={{ fontFamily:"Georgia,serif", fontSize:"1.05rem", lineHeight:1.8, color:C.highlight, fontStyle:"italic", marginBottom:"0.8rem" }}>"{data.season}"</p>
+          <p style={{ fontSize:"0.88rem", lineHeight:1.85, color:C.soft }}>{data.season_reason}</p>
+        </Card>
+      )}
+
+      {data.unknown_self && (
+        <Card label="당신이 몰랐던 당신" color="#8ab8b0">
+          <p style={{ fontSize:"0.9rem", lineHeight:1.95, color:C.text }}>{data.unknown_self}</p>
+        </Card>
+      )}
+
+      {data.need_now && (
+        <Card label="지금 당신에게 필요한 것" color="#b8a86a">
+          <p style={{ fontSize:"0.9rem", lineHeight:1.95, color:C.text }}>{data.need_now}</p>
+        </Card>
+      )}
+
+      {data.letter && (
+        <Card label="당신에게 보내는 편지" color={C.accent}>
+          <p style={{ fontFamily:"Georgia,serif", fontSize:"0.92rem", lineHeight:2.1, color:C.text, fontStyle:"italic" }}>{data.letter}</p>
+        </Card>
+      )}
+
       <Card label="당신에게" color={C.accent2}>
         <p style={{ fontFamily:"Georgia,serif", fontSize:"0.9rem", lineHeight:2, color:C.text, fontStyle:"italic", marginBottom:data.growth?"1.2rem":0 }}>"{data.message}"</p>
         {data.growth && (
@@ -384,7 +409,8 @@ export default function PersonalityApp() {
       const t1 = await callAPI(base + `{"title":"시적인 제목","subtitle":"한 줄 설명","portrait":"핵심 성격 2문장","inner_pattern":"내면 패턴 2문장","core_fear":"핵심 두려움 1문장","relationship":"관계 패턴 2문장","attachment_note":"관계 주의점 1문장","self_image":"자아상 2문장"}`);
       const t2 = await callAPI(base + `{"strengths":["강점1","강점2","강점3"],"shadows":["그림자1","그림자2"],"love_style":"연애 방식 2문장","love_pattern":"연애 반복 패턴 1문장","bad_habits":"나쁜 습관과 방어기제 2문장","stress_pattern":"스트레스 패턴 1문장"}`);
       const t3 = await callAPI(base + `{"relationship_type":"나에게 맞는 관계 유형 2문장","relationship_advice":"관계 주의점 1문장","travel_style":"이 사람에게 맞는 여행 스타일 2문장","travel_destinations":["구체적인 추천 여행지1 - 이유","추천 여행지2 - 이유","추천 여행지3 - 이유"],"message":"따뜻한 말 2문장","growth":["성장 제안1","제안2","제안3"]}`);
-      setResult({ ...JSON.parse(t1), ...JSON.parse(t2), ...JSON.parse(t3) });
+      const t4 = await callAPI(base + `{"season":"이 사람을 계절과 시간대로 표현 (예: 늦가을 오후 같은 사람) 1문장","season_reason":"그 이유 1문장","unknown_self":"스스로 몰랐던 자신의 모습 2문장","need_now":"지금 이 시기의 당신에게 필요한 것 2문장","letter":"이 사람에게 쓰는 따뜻한 편지. 당신은... 으로 시작. 3-4문장. 분석 말고 진심으로."}`);
+      setResult({ ...JSON.parse(t1), ...JSON.parse(t2), ...JSON.parse(t3), ...JSON.parse(t4) });
       setPhase("result");
     } catch (e) {
       setErrMsg(e.message || "알 수 없는 오류");
