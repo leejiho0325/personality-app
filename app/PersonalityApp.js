@@ -26,10 +26,10 @@ const questions = [
   { category: "여행", type:"choice", text: "여행에서 가장 기억에 남는 순간은?", context: "여행의 어떤 부분이 당신을 채우나요?", choices: ["낯선 골목을 혼자 걷다가 발견한 작은 것들", "현지 음식과 문화에 완전히 녹아드는 순간", "동행과 함께 웃고 떠들었던 순간들", "일상과 완전히 단절된 고요함과 자유"] },
   { category: "주관식", type:"text", text: "당신이 싫어하는 타인의 모습 중, 사실 나에게도 있는 것은?", context: "불편하더라도 솔직하게.", placeholder: "솔직하게 써주세요..." },
   { category: "주관식", type:"text", text: "하기 싫다고 생각하지만 사실은 두려워서 안 하는 일이 있나요?", context: "핑계가 아닌 진짜 이유.", placeholder: "솔직하게 써주세요..." },
-  { category: "주관식", type:"text", text: "좋아하는 사람에게 자주 하는 말이나 행동이 있나요? 근데 그게 사실 불안에서 나온 건 아닌가요?", context: "연애 패턴을 돌아보며.", placeholder: "솔직하게 써주세요..." },
+  { category: "주관식", type:"text", text: "연인에게 가장 바라는 것과 절대 참을 수 없는 것은? 그리고 그 이유는?", context: "바라는 것과 싫은 것, 이유까지 솔직하게.", placeholder: "솔직하게 써주세요..." },
   { category: "주관식", type:"text", text: "지금 당신이 가장 미루고 있는 것은? 왜 미루고 있다고 생각하나요?", context: "이유까지 써주세요.", placeholder: "솔직하게 써주세요..." },
   { category: "주관식", type:"text", text: "스트레스받을 때 타인에게 어떤 사람이 되나요? 본인은 인식하고 있나요?", context: "주변 사람들이 보는 나.", placeholder: "솔직하게 써주세요..." },
-  { category: "주관식", type:"text", text: "가장 오래 상처받은 관계 패턴이 있다면?", context: "반복되는 관계의 패턴.", placeholder: "솔직하게 써주세요..." },
+  { category: "주관식", type:"text", text: "지금까지 관계에서 가장 반복된 실수나 후회가 있다면?", context: "관계에서 반복되는 나의 패턴.", placeholder: "솔직하게 써주세요..." },
   { category: "주관식", type:"text", text: "스스로에게 가장 자주 하는 말은?", context: "혼잣말, 자기 대화 패턴.", placeholder: "솔직하게 써주세요..." },
   { category: "주관식", type:"text", text: "언젠가 꼭 가고 싶은 곳이 있다면? 왜 그곳인가요?", context: "여행지도 좋고, 어떤 공간이든.", placeholder: "자유롭게 써주세요..." },
 ];
