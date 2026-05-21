@@ -1,5 +1,5 @@
 export async function POST(req) {
-  const { name, title, portrait, result_data } = await req.json();
+  const { name, title, portrait, result_data, answers } = await req.json();
 
   const res = await fetch(`${process.env.SUPABASE_URL}/rest/v1/results`, {
     method: "POST",
@@ -9,7 +9,7 @@ export async function POST(req) {
       "Authorization": `Bearer ${process.env.SUPABASE_ANON_KEY}`,
       "Prefer": "return=minimal",
     },
-    body: JSON.stringify({ name, title, portrait, result_data }),
+    body: JSON.stringify({ name, title, portrait, result_data, answers }),
   });
 
   if (!res.ok) {

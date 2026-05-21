@@ -423,7 +423,7 @@ export default function PersonalityApp() {
       return `[${q.category}] ${q.text} → "${q.choices[a.c]}"`;
     }).join("\n");
 
-    const base = `심리 분석가. MBTI 라벨 금지. 이해하는 시선으로. 선택 결과:\n\n${summary}\n\n순수 JSON만 출력. 마크다운 없이. 각 값 1-2문장:\n`;
+    const base = `심리 분석가. MBTI 라벨 금지. 이해하는 시선으로. 이 사람의 이름은 ${userName}. 결과에서 "당신" 대신 "${userName}님"으로 표현할 것. 선택 결과:\n\n${summary}\n\n순수 JSON만 출력. 마크다운 없이. 각 값 1-2문장:\n`;
     try {
       const t1 = await callAPI(base + `{"title":"시적인 제목","subtitle":"한 줄 설명","portrait":"핵심 성격 2문장","inner_pattern":"내면 패턴 2문장","core_fear":"핵심 두려움 1문장","relationship":"관계 패턴 2문장","attachment_note":"관계 주의점 1문장","self_image":"자아상 2문장"}`);
       const t2 = await callAPI(base + `{"strengths":["강점1","강점2","강점3"],"shadows":["그림자1","그림자2"],"love_style":"연애 방식 2문장","love_pattern":"연애 반복 패턴 1문장","bad_habits":"나쁜 습관과 방어기제 2문장","stress_pattern":"스트레스 패턴 1문장"}`);
@@ -434,6 +434,11 @@ export default function PersonalityApp() {
       setPhase("result");
       // Supabase 저장
       try {
+        const answerData = answers.map(a => {
+          const q = questions[a.q];
+          if (q.type === "text") return { category: q.category, question: q.text, answer: a.text };
+          return { category: q.category, question: q.text, answer: q.choices[a.c] };
+        });
         await fetch("/api/save", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -442,6 +447,7 @@ export default function PersonalityApp() {
             title: finalResult.title,
             portrait: finalResult.portrait,
             result_data: finalResult,
+            answers: answerData,
           }),
         });
       } catch(e) { console.log("저장 실패:", e); }
