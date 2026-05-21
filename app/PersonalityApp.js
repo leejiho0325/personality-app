@@ -6,7 +6,7 @@ const questions = [
   { category: "내면 심리", type:"choice", text: "당신이 가장 숨기고 싶은 것은?", context: "아무도 모른다고 가정했을 때, 당신 안에 있는 것.", choices: ["내가 생각만큼 괜찮은 사람이 아닐 수도 있다는 두려움", "진심으로 원하는 게 뭔지 사실 잘 모른다는 것", "누군가를 깊이 필요로 하면서도 드러내지 못한다는 것", "지금 이 삶이 내가 진짜 원하던 삶이 아닐 수 있다는 감각"] },
   { category: "내면 심리", type:"choice", text: "타인에게 어떤 사람으로 기억되고 싶나요?", context: "사회적으로 올바른 답 말고, 진짜로 원하는 것.", choices: ["존경받는 사람. 능력 있고 흔들리지 않는.", "따뜻한 사람. 곁에 있으면 편안해지는.", "자유로운 사람. 자기 방식대로 사는.", "의미 있는 사람. 무언가를 남긴."] },
   { category: "내면 심리", type:"choice", text: "스스로를 가장 자책할 때는?", context: "잘못이 아니어도 자책하게 되는 패턴.", choices: ["누군가에게 실망을 줬거나 기대에 못 미쳤을 때", "감정적으로 반응해서 내가 원하는 모습이 아니었을 때", "해야 할 일을 미루거나 흐지부지 넘긴 것 같을 때", "타인의 감정보다 내 것을 먼저 챙겼다는 느낌이 들 때"] },
-  { category: "내면 심리", type:"choice", text: "당신이 가장 질투를 느끼는 순간은?", context: "불편해도 솔직하게.", choices: ["자유롭고 거침없이 사는 사람을 볼 때", "내가 원하는 걸 이미 가진 사람을 볼 때", "깊이 사랑받고 인정받는 사람을 볼 때", "자기 자신을 잘 아는 사람을 볼 때"] },
+  { category: "내면 심리", type:"choice", text: "누군가를 보며 '저 사람처럼 되고 싶다'고 느낀 적 있나요? 그건 어떤 사람이었나요?", context: "솔직하게.", choices: ["하고 싶은 걸 거침없이 하며 사는 사람", "내가 원하던 것을 이미 가진 사람", "깊이 사랑받고 소중히 여겨지는 사람", "자기 자신을 잘 알고 흔들리지 않는 사람"] },
   { category: "내면 심리", type:"choice", text: "슬프거나 힘든 일이 생겼을 때 당신은?", context: "가장 자연스럽게 나오는 행동.", choices: ["주변 사람에게 솔직하게 털어놓는다", "괜찮은 척하지만 혼자 있을 때 무너진다", "아무렇지 않은 듯 일상을 이어간다. 표현이 잘 안 된다", "감정을 인식하지만 누구에게도 말 못 하고 혼자 삭인다"] },
   { category: "관계와 애착", type:"choice", text: "가까운 사람이 갑자기 연락을 끊었습니다.", context: "며칠째 답장이 없고, 이유도 모르는 상황.", choices: ["내가 뭔가 잘못한 건지 자꾸 되짚어본다", "연락해서 무슨 일인지 직접 물어본다", "상대방 사정이 있겠지 생각하고 기다린다", "서운하지만 먼저 다가가지 않기로 한다"] },
   { category: "관계와 애착", type:"choice", text: "누군가와 함께 있을 때 외로움을 느끼는 순간은?", context: "혼자 있을 때가 아닌, 함께 있을 때.", choices: ["내 진짜 감정을 말했는데 상대가 이해 못 한다고 느낄 때", "상대는 편해 보이는데 나만 애쓰고 있다는 느낌이 들 때", "깊은 대화 없이 표면적인 말만 오갈 때", "내가 어떤 역할을 해야 하는지만 신경 쓰일 때"] },
@@ -24,11 +24,14 @@ const questions = [
   { category: "스트레스", type:"choice", text: "스트레스가 쌓였을 때 가장 효과적인 해소법은?", context: "실제로 써봤을 때 마음이 풀리는 방법.", choices: ["혼자만의 시간. 산책, 음악, 영화 등으로 충전한다", "누군가와 대화하거나 같이 있는 것만으로 풀린다", "몸을 쓴다. 운동, 청소, 요리 등 뭔가를 한다", "그냥 자고 일어나면 좀 나아진다"] },
   { category: "여행", type:"choice", text: "여행을 간다면 어떤 스타일인가요?", context: "진짜 선호하는 방식.", choices: ["빼곡한 계획을 세우고 그대로 움직인다", "큰 틀만 잡고 즉흥적으로 움직인다", "아무 계획 없이 그냥 떠난다", "혼자보다 누군가와 함께 가는 게 중요하다"] },
   { category: "여행", type:"choice", text: "여행에서 가장 기억에 남는 순간은?", context: "여행의 어떤 부분이 당신을 채우나요?", choices: ["낯선 골목을 혼자 걷다가 발견한 작은 것들", "현지 음식과 문화에 완전히 녹아드는 순간", "동행과 함께 웃고 떠들었던 순간들", "일상과 완전히 단절된 고요함과 자유"] },
-  { category: "주관식", type:"text", text: "지금 이 순간 가장 외면하고 싶은 감정이나 생각은?", context: "머릿속에 있지만 직면하기 싫은 것.", placeholder: "솔직하게 써주세요..." },
-  { category: "주관식", type:"text", text: "당신이 가장 두려워하는 것은 무엇인가요?", context: "실패, 관계, 미래, 자기 자신... 무엇이든.", placeholder: "진짜 두려움을 써주세요..." },
-  { category: "주관식", type:"text", text: "지금 가장 듣고 싶은 말이 있다면?", context: "누구에게든, 어떤 말이든.", placeholder: "자유롭게 써주세요..." },
-  { category: "주관식", type:"text", text: "당신이 진짜 원하는 삶은 어떤 모습인가요?", context: "현실 가능 여부는 상관없이, 진짜로 원하는 것.", placeholder: "자유롭게 써주세요..." },
-  { category: "주관식", type:"text", text: "지금의 나에게 하고 싶은 말이 있다면?", context: "타인이 아닌, 나 자신에게.", placeholder: "솔직하게 써주세요..." },
+  { category: "주관식", type:"text", text: "당신이 싫어하는 타인의 모습 중, 사실 나에게도 있는 것은?", context: "불편하더라도 솔직하게.", placeholder: "솔직하게 써주세요..." },
+  { category: "주관식", type:"text", text: "하기 싫다고 생각하지만 사실은 두려워서 안 하는 일이 있나요?", context: "핑계가 아닌 진짜 이유.", placeholder: "솔직하게 써주세요..." },
+  { category: "주관식", type:"text", text: "좋아하는 사람에게 자주 하는 말이나 행동이 있나요? 근데 그게 사실 불안에서 나온 건 아닌가요?", context: "연애 패턴을 돌아보며.", placeholder: "솔직하게 써주세요..." },
+  { category: "주관식", type:"text", text: "지금 당신이 가장 미루고 있는 것은? 왜 미루고 있다고 생각하나요?", context: "이유까지 써주세요.", placeholder: "솔직하게 써주세요..." },
+  { category: "주관식", type:"text", text: "스트레스받을 때 타인에게 어떤 사람이 되나요? 본인은 인식하고 있나요?", context: "주변 사람들이 보는 나.", placeholder: "솔직하게 써주세요..." },
+  { category: "주관식", type:"text", text: "가장 오래 상처받은 관계 패턴이 있다면?", context: "반복되는 관계의 패턴.", placeholder: "솔직하게 써주세요..." },
+  { category: "주관식", type:"text", text: "스스로에게 가장 자주 하는 말은?", context: "혼잣말, 자기 대화 패턴.", placeholder: "솔직하게 써주세요..." },
+  { category: "주관식", type:"text", text: "언젠가 꼭 가고 싶은 곳이 있다면? 왜 그곳인가요?", context: "여행지도 좋고, 어떤 공간이든.", placeholder: "자유롭게 써주세요..." },
 ];
 
 const catColor = { "내면 심리": "#b8976a", "관계와 애착": "#6a8ab8", "자아상": "#8a6ab8", "삶의 태도": "#6ab88a", "연애": "#c46a8a", "핵심": "#c0bdb8", "스트레스": "#b86a6a", "여행": "#6ab8a8", "주관식": "#a08ab8" };
@@ -50,7 +53,7 @@ function Intro({ onStart }) {
         <span style={{ color:C.soft }}>내면의 패턴</span>으로 읽습니다.
       </p>
       <p style={{ fontFamily:"monospace", fontSize:"0.58rem", color:C.muted, letterSpacing:"0.1em", margin:"1.6rem 0 2rem" }}>
-        26개 질문 · 솔직할수록 정확합니다
+        29개 질문 · 솔직할수록 정확합니다
       </p>
       <button onClick={onStart} style={{ width:"100%", maxWidth:300, padding:"1rem", background:"transparent", border:`1px solid ${C.accent}`, color:C.accent, fontFamily:"Georgia,serif", fontSize:"1rem", cursor:"pointer" }}>
         시작하기
