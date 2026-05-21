@@ -424,7 +424,7 @@ export default function PersonalityApp() {
     }).join("\n");
 
     const choiceAnswers = answers.filter(a => questions[a.q].type === "choice").map(a => `[${questions[a.q].category}] ${questions[a.q].text} → "${questions[a.q].choices[a.c]}"`).join("\n");
-    const subjectiveAnswers = answers.filter(a => questions[a.q].type === "text").map(a => `Q: ${questions[a.q].text}\nA: "${a.text}"`).join("\n");
+    const subjectiveAnswers = answers.filter(a => questions[a.q].type === "text" && a.text && a.text.length > 0).map(a => `Q: ${questions[a.q].text}\nA: "${a.text}"`).join("\n");
     const base = `당신은 깊이 있는 심리 분석가이자 인간 내면을 섬세하게 읽는 전문가입니다.
 아래는 ${userName}님이 직접 선택하고 작성한 내면 심리 데이터입니다.
 
@@ -444,10 +444,10 @@ ${subjectiveAnswers}
 - 순수 JSON만 출력. 마크다운 없이:
 `;
     try {
-      const t1 = await callAPI(base + `{"title":"시적 제목","subtitle":"부제","portrait":"성격 2문장","inner_pattern":"내면 패턴 2문장","core_fear":"핵심 두려움","relationship":"관계 패턴 2문장","attachment_note":"관계 주의점","self_image":"자아상 2문장"}`);
-      const t2 = await callAPI(base + `{"strengths":["강점1","강점2","강점3"],"shadows":["그림자1","그림자2"],"love_style":"연애 방식 2문장","love_pattern":"연애 반복 패턴 1문장","bad_habits":"나쁜 습관과 방어기제 2문장","stress_pattern":"스트레스 패턴 1문장"}`);
-      const t3 = await callAPI(base + `{"relationship_type":"나에게 맞는 관계 유형 2문장","relationship_advice":"관계 주의점 1문장","travel_style":"이 사람에게 맞는 여행 스타일 2문장","travel_destinations":["구체적인 추천 여행지1 - 이유","추천 여행지2 - 이유","추천 여행지3 - 이유"],"message":"따뜻한 말 2문장","growth":["성장 제안1","제안2","제안3"]}`);
-      const t4 = await callAPI(base + `{"season":"계절 표현 1문장","season_reason":"이유 1문장","unknown_self":"몰랐던 자신 2문장","need_now":"지금 필요한 것 2문장","letter":"${userName}님께 쓰는 편지 3문장"}`);
+      const t1 = await callAPI(base + `{"title":"이 사람의 내면을 담은 시적인 제목","subtitle":"한 줄 부제","portrait":"핵심 성격 3문장. 표면이 아닌 본질을 다룰 것","inner_pattern":"내면 심리 패턴 3문장. 무의식적 욕구와 두려움 포함","core_fear":"가장 깊은 핵심 두려움 1문장. 직접적으로","relationship":"관계에서 보이는 패턴 3문장","attachment_note":"관계에서 주의해야 할 점 1문장","self_image":"자신을 바라보는 방식과 자존감 패턴 2문장"}`);
+      const t2 = await callAPI(base + `{"strengths":["구체적인 강점1","강점2","강점3"],"shadows":["강점의 이면인 그림자1","그림자2"],"love_style":"연애에서 사랑을 표현하는 방식 2문장","love_pattern":"연애에서 반복되는 패턴 2문장","bad_habits":"나쁜 습관과 방어기제 2문장. 왜 그 습관이 생겼는지 포함","stress_pattern":"스트레스 반응 패턴 2문장"}`);
+      const t3 = await callAPI(base + `{"relationship_type":"이 사람에게 맞는 관계 유형 2문장","relationship_advice":"관계에서 주의할 점 1문장","travel_style":"이 성격에 맞는 여행 스타일 2문장","travel_destinations":["구체적인 추천 여행지1 — 이 사람에게 맞는 이유","추천 여행지2 — 이유","추천 여행지3 — 이유"],"message":"따뜻하고 진실한 말 2문장","growth":["성장을 위한 구체적인 제안1","제안2","제안3"]}`);
+      const t4 = await callAPI(base + `{"season":"이 사람을 계절과 시간대로 표현 (예: 늦가을 오후 같은 사람) 1문장","season_reason":"그 이유 1문장","unknown_self":"스스로 몰랐던 자신의 모습 2문장. 주관식 답변을 깊이 반영할 것","need_now":"지금 이 시기의 ${userName}님에게 필요한 것 2문장","letter":"${userName}님께 쓰는 따뜻한 편지. ${userName}님은... 으로 시작. 4문장. 분석 말고 진심으로."}`);
       const finalResult = { ...JSON.parse(t1), ...JSON.parse(t2), ...JSON.parse(t3), ...JSON.parse(t4) };
       setResult(finalResult);
       setPhase("result");
