@@ -423,10 +423,26 @@ export default function PersonalityApp() {
       return `[${q.category}] ${q.text} → "${q.choices[a.c]}"`;
     }).join("\n");
 
-    // 주관식만 따로 추출해서 요약
-    const subjectiveAnswers = answers.filter(a => questions[a.q].type === "text").map(a => `Q: ${questions[a.q].text}\nA: ${a.text}`).join("\n");
-    const choiceAnswers = answers.filter(a => questions[a.q].type === "choice").map(a => `[${questions[a.q].category}] ${questions[a.q].text} → ${questions[a.q].choices[a.c]}`).join("\n");
-    const base = `심리 분석가. MBTI 금지. 이름: ${userName}님. "당신" 대신 "${userName}님" 사용.\n선택:\n${choiceAnswers}\n주관식:\n${subjectiveAnswers}\nJSON만 출력. 각 값 1문장:\n`;
+    const choiceAnswers = answers.filter(a => questions[a.q].type === "choice").map(a => `[${questions[a.q].category}] ${questions[a.q].text} → "${questions[a.q].choices[a.c]}"`).join("\n");
+    const subjectiveAnswers = answers.filter(a => questions[a.q].type === "text").map(a => `Q: ${questions[a.q].text}\nA: "${a.text}"`).join("\n");
+    const base = `당신은 깊이 있는 심리 분석가이자 인간 내면을 섬세하게 읽는 전문가입니다.
+아래는 ${userName}님이 직접 선택하고 작성한 내면 심리 데이터입니다.
+
+[행동 패턴 선택]
+${choiceAnswers}
+
+[주관식 직접 답변 - 이 부분을 특히 깊이 분석할 것]
+${subjectiveAnswers}
+
+분석 원칙:
+- MBTI, 에니어그램 등 유형 라벨 절대 금지
+- 선택지를 단순 나열하지 말고 패턴과 무의식을 해석할 것
+- 주관식 답변에서 본인도 인식 못 한 심리를 발견해서 반영할 것
+- ${userName}님이 읽었을 때 "어떻게 알았지?"라는 느낌이 들게
+- 따뜻하지만 날카롭고, 판단하지 않는 시선으로
+- "${userName}님"으로 표현
+- 순수 JSON만 출력. 마크다운 없이:
+`;
     try {
       const t1 = await callAPI(base + `{"title":"시적 제목","subtitle":"부제","portrait":"성격 2문장","inner_pattern":"내면 패턴 2문장","core_fear":"핵심 두려움","relationship":"관계 패턴 2문장","attachment_note":"관계 주의점","self_image":"자아상 2문장"}`);
       const t2 = await callAPI(base + `{"strengths":["강점1","강점2","강점3"],"shadows":["그림자1","그림자2"],"love_style":"연애 방식 2문장","love_pattern":"연애 반복 패턴 1문장","bad_habits":"나쁜 습관과 방어기제 2문장","stress_pattern":"스트레스 패턴 1문장"}`);
